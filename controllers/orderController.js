@@ -98,7 +98,10 @@ const createOrderCheckout = async (session) => {
     });
 
     // Removing all Cart Items
-    await Cart.findByIdAndUpdate(session.client_reference_id, { items: [] });
+    await Cart.findOneAndUpdate(
+      { user: session.client_reference_id },
+      { items: [] }
+    );
 
     // -------- Create Order --------------
     let orders = [];
