@@ -15,16 +15,17 @@ const orderRouter = require('./routes/orderRoutes');
 const orderCtrl = require('./controllers/orderController');
 
 // ----- Setting security headers -------
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      'default-src': ["'self'"],
-      'script-src': ["'self'", 'js.stripe.com', "'unsafe-inline'"],
-      'frame-src': ['js.stripe.com'],
-      'style-src': ["'self'", 'https:', "'unsafe-inline'"]
-    }
-  })
-);
+// app.use(
+//   helmet.contentSecurityPolicy({
+//     directives: {
+//       'default-src': ["'self'"],
+//       'script-src': ["'self'", 'js.stripe.com', "'unsafe-inline'"],
+//       'frame-src': ['js.stripe.com'],
+//       'font-src': ['fonts.google.com'],
+//       'style-src': ["'self'", 'https:', "'unsafe-inline'"]
+//     }
+//   })
+// );
 
 // Limit requests from the same API
 const limiter = rateLimit({

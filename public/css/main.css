@@ -7,53 +7,6 @@
 
 @charset "UTF-8";
 
-@font-face {
-  font-family: 'Roboto';
-  src: url(/Roboto-Light0cea39826bd36bbfe33076c544e3a1af.ttf) format('truetype');
-  font-weight: 300;
-}
-@font-face {
-  font-family: 'Roboto';
-  src: url(/Roboto-Regular03523cf578d69fa923226ff457b92d90.ttf) format('truetype');
-  font-weight: 400;
-}
-@font-face {
-  font-family: 'Roboto';
-  src: url(/Roboto-Medium13a29228654d5c5ec9c482a267efa4af.ttf) format('truetype');
-  font-weight: 500;
-}
-@font-face {
-  font-family: 'Roboto';
-  src: url(/Roboto-Bold4f39c5796e60c9d8e7327a00e9a4442e.ttf) format('truetype');
-  font-weight: 700;
-}
-
-@font-face {
-  font-family: 'Montserrat';
-  src: url(/Montserrat-Light02afb26fe72fcc05298817491c044b7b.ttf) format('truetype');
-  font-weight: 300;
-}
-@font-face {
-  font-family: 'Montserrat';
-  src: url(/Montserrat-Regular3cd786652b8a2e9d41f210cb1a527ff6.ttf) format('truetype');
-  font-weight: 400;
-}
-@font-face {
-  font-family: 'Montserrat';
-  src: url(/Montserrat-Mediume2d60bc49517598c0ce8b98f8d4e579f.ttf) format('truetype');
-  font-weight: 500;
-}
-@font-face {
-  font-family: 'Montserrat';
-  src: url(/Montserrat-SemiBoldfa8441f345d83a0bc4ec345a6948dbb0.ttf) format('truetype');
-  font-weight: 600;
-}
-@font-face {
-  font-family: 'Montserrat';
-  src: url(/Montserrat-Bold079ca05d3ded9bc107ab8a8da013be22.ttf) format('truetype');
-  font-weight: 700;
-}
-
 *,
 *::before,
 *::after {
@@ -62,7 +15,8 @@
 }
 
 :root {
-  --clr-primary: #5e63ca;
+  /* --clr-primary: #5e63ca; */
+  --clr-primary: #f9a905;
   --clr-dark: #111;
   --clr-dark-light: #333;
   --clr-gray: #555;
@@ -1235,31 +1189,35 @@ label {
 }
 
 .banner {
-  width: 100%;
-  min-height: 90vh;
-  position: relative;
-  background-image: url(/bannerb249bddaa028b30afd12f51cc38bb5d2.jpg);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: left;
+  background-color: #f9a905;
+  height: 100vh;
+  max-height: 800px;
 }
 
 .banner__container {
+  width: 100%;
+  padding: 0 1.5rem;
+  width: 100%;
+  height: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  background-image: url('/images/banner-img.png');
+  background-repeat: no-repeat;
+  background-position: 80% bottom;
+  background-size: 700px;
+  position: relative;
+}
+
+.banner__text {
   position: absolute;
   width: 75%;
-  max-width: 500px;
-  top: 50%;
+  max-width: 600px;
+  bottom: 5%;
   left: 5%;
   -webkit-transform: translateY(-50%);
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
   padding-right: 1.5rem;
-}
-@media screen and (min-width: 700px) {
-  .banner__container {
-    left: initial;
-    right: 25vw;
-  }
 }
 
 .banner__title,
@@ -1267,25 +1225,26 @@ label {
   color: #fff;
   font-family: 'Montserrat';
   font-family: var(--ff-secondary);
+  text-shadow: 1px 1px rgba(0, 0, 0, 0.2);
 }
 
 .banner__title {
   font-size: 3.5rem;
   text-transform: uppercase;
-  text-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
   letter-spacing: 1px;
 }
 
 .banner__subtitle {
   font-size: 1.45rem;
   text-transform: capitalize;
+  font-weight: 500;
 }
 
 .banner .btn-show-more {
   -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
   background: #fff;
-  color: hotpink;
+  color: #f9a905;
 }
 
 .products {
@@ -1299,11 +1258,11 @@ label {
   font-size: 2rem;
   text-transform: uppercase;
   color: #333;
-  color: var(--clr-dark);
+  color: var(--clr-primary);
   font-family: serif;
 }
 .products__header p {
-  color: #555;
+  color: #f9a905;
   color: var(--clr-gray);
 }
 
@@ -1321,8 +1280,7 @@ label {
   outline: none;
   font-size: 1.1rem;
   padding: 0.45rem 0.25rem;
-  color: #5e63ca;
-  color: var(--clr-primary);
+  color: #f57a7a;
   font-weight: 500;
   font-family: 'Montserrat';
   font-family: var(--ff-secondary);
@@ -1504,6 +1462,10 @@ label {
   margin-bottom: 2.5rem;
 }
 
+.footer__col h5 {
+  color: var(--clr-primary);
+}
+
 @media screen and (min-width: 600px) {
   .footer__col {
     width: 50%;
@@ -1574,7 +1536,7 @@ label {
 }
 .follow-us a:focus,
 .follow-us a:hover {
-  background: #7b81ff;
+  background: var(--clr-primary);
   color: #fff;
   outline: none;
 }
@@ -2215,4 +2177,3 @@ label {
     transform: rotate(360deg);
   }
 }
-
