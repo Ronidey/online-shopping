@@ -1,58 +1,54 @@
-const Cart = require('../models/cartModel');
 const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
 
 // ---------- For Testing Only ----------
-exports.createCart = catchAsync(async (req, res, next) => {
-  await Cart.create({ user: req.currentUser._id });
-  res.status(201).send();
+exports.addCartItem = catchAsync(async (req, res, next) => {
+  const user = req.currentUser;
+
+  // 1) If the product already exists, increment qty
+  const cartItem = user.cart.find(
+    (item) => item.product._id == req.body.productId
+  );
+
+  if (!cartItem) {
+    user.cart.push({ product: req.body.productId, qty: req.body.qty });
+  } else {
+    cartItem.qty += 1;
+  }
+
+  await user.save({ validateBeforeSave: false });
+  res.json({ itemsCount: user.cart.length, cart: user.cart });
 });
 
 exports.getMyCart = catchAsync(async (req, res, next) => {
-  const cart = await Cart.findOne({ user: req.currentUser._id }).populate({
-    path: 'items.product',
-    select: 'imgUrl title currentPrice'
+  res.json({
+    itemsCount: req.currentUser.cart.length,
+    cart: req.currentUser.cart
   });
-
-  let totalAmount = 0;
-  for (let itemObj of cart.items) {
-    totalAmount += itemObj.product.currentPrice * itemObj.qty;
-  }
-
-  res.status(200).json({ items: cart.items, totalAmount });
 });
 
-exports.AddToCart = catchAsync(async (req, res, next) => {
-  await Cart.findOneAndUpdate(
-    { user: req.currentUser._id },
-    { $push: { items: req.body } },
-    { new: true }
+// Remove Cart Item
+
+exports.removeCartItem = catchAsync(async (req, res, next) => {
+  const user = req.currentUser;
+
+  // 1) Filter the product
+  user.cart = user.cart.filter(
+    (item) => item.product._id != req.params.productId
   );
 
-  res.status(200).send();
+  await user.save({ validateBeforeSave: false });
+  res.json({ itemsCount: user.cart.length, cart: user.cart });
 });
 
-exports.removeFromCart = catchAsync(async (req, res, next) => {
-  const cart = await Cart.findOne({ user: req.currentUser._id });
-
-  // Not populating item so item is an id
-  cart.items = cart.items.filter(
-    (itemObj) => itemObj.product.toString() !== req.params.id
+exports.updateCartItem = catchAsync(async (req, res, next) => {
+  const user = req.currentUser;
+  const cartItem = user.cart.find(
+    (item) => item.product._id == req.params.productId
   );
 
-  await cart.save();
-  res.status(200).send();
-});
+  cartItem.qty = req.body.qty || cartItem.qty;
+  cartItem.size = req.body.size || cartItem.size;
 
-exports.updateCartItemQty = catchAsync(async (req, res, next) => {
-  const myCart = await Cart.findOne({ user: req.currentUser._id });
-
-  for (let item of myCart.items) {
-    if (item._id == req.params.itemId) {
-      item.qty = req.body.qty;
-    }
-  }
-
-  await myCart.save();
-  res.status(200).send();
+  await user.save({ validateBeforeSave: false });
+  res.json({ itemsCount: user.cart.length, cart: user.cart });
 });

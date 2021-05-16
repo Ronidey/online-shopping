@@ -10,7 +10,6 @@ var compression = require('compression');
 
 const productRouter = require('./routes/productRoutes');
 const userRouter = require('./routes/userRoutes');
-const cartRouter = require('./routes/cartRoutes');
 const orderRouter = require('./routes/orderRoutes');
 const orderCtrl = require('./controllers/orderController');
 
@@ -75,7 +74,6 @@ if (process.env.NODE_ENV === 'production') {
 
 app.use('/api/v1/products', productRouter);
 app.use('/api/v1/users', userRouter);
-app.use('/api/v1/my-cart', cartRouter);
 app.use('/api/v1/my-orders', orderRouter);
 
 app.get('*', (req, res) => {
@@ -98,7 +96,7 @@ app.use((err, req, res, next) => {
     err.message = 'Something went wrong! Please login again.';
   }
 
-  const error = err.message || 'Something went wrong!';
+  const error = err.message || 'Unexpected Error Occured!';
 
   res.status(httpStatus).json({
     status,

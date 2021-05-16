@@ -29,8 +29,7 @@ const userSchema = new mongoose.Schema(
       required: [true, 'Password is not defined!'],
       minlength: [8, 'Password must be 8 to 16 characters long!'],
       maxlength: [16, 'Password must be 8 to 16 characters long!'],
-      trim: true,
-      select: false
+      trim: true
     },
     role: {
       type: String,
@@ -47,13 +46,31 @@ const userSchema = new mongoose.Schema(
         ref: 'Product'
       }
     ],
-    passwordChangedAt: Date
+    cart: [
+      {
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Product'
+        },
+        size: String,
+        qty: Number
+      }
+    ],
+    tokens: [String]
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
   }
 );
+
+userSchema.methods.toJSON = function () {
+  const obj = this.toObject();
+
+  delete obj.password;
+  delete obj.tokens;
+  return obj;
+};
 
 // userSchema.virtual('fullName').get(function () {
 //   return `${this.firstName} ${this.lastName}`;
@@ -63,6 +80,9 @@ userSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'wishlist',
     select: 'imgUrl title currentPrice'
+  }).populate({
+    path: 'cart.product',
+    select: 'title imgUrl currentPrice'
   });
 
   next();
@@ -75,18 +95,17 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-userSchema.pre('save', function (next) {
-  if (this.isModified('password') && !this.isNew) {
-    this.passwordChangedAt = Date.now() - 1000;
-  }
-  next();
-});
+userSchema.statics.findByCredentials = async (email, password) => {
+  const user = await User.findOne({ email });
 
-userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
-  if (this.passwordChangedAt) {
-    const changedTimeStamp = this.passwordChangedAt.getTime() / 1000;
-    return changedTimeStamp > JWTTimestamp;
-  }
+  if (!user)
+    throw new Error('No user found with the given Email! please Signup');
+
+  const isMatch = await bcryptjs.compare(password, user.password);
+
+  if (!isMatch) throw new Error('Invalid email and password!');
+
+  return user;
 };
 
 userSchema.methods.verifyPassword = async (password, hashPassword) => {

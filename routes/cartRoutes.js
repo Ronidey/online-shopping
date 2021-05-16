@@ -5,10 +5,15 @@ const cartCtrl = require('../controllers/cartController');
 
 router.use(authCtrl.protect);
 
-router.route('/').get(cartCtrl.getMyCart).post(cartCtrl.createCart);
+router.route('/').get(cartCtrl.getMyCart).post(cartCtrl.addCartItem);
+router
+  .route('/:productId')
+  .delete(cartCtrl.removeCartItem)
+  .patch(cartCtrl.updateCartItem);
 
-router.patch('/:itemId/change-qty', cartCtrl.updateCartItemQty);
-router.patch('/add', cartCtrl.AddToCart);
-router.patch('/remove/:id', cartCtrl.removeFromCart);
+// router.route('/').get(cartCtrl.getMyCart).post(cartCtrl.createCart);
+
+// router.patch('/:itemId/change-qty', cartCtrl.updateCartItemQty);
+// router.patch('/remove/:id', cartCtrl.removeFromCart);
 
 module.exports = router;

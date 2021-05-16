@@ -1,6 +1,5 @@
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
 
 exports.getMyProfile = catchAsync(async (req, res, next) => {
   res.status(200).json({
@@ -57,6 +56,6 @@ exports.updateMyWishlist = catchAsync(async (req, res, next) => {
     );
   }
 
-  await user.save();
-  res.status(200).send();
+  await user.save({ validateBeforeSave: false });
+  res.send({ wishlist: user.wishlist });
 });
