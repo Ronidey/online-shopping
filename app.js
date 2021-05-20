@@ -13,6 +13,13 @@ const userRouter = require('./routes/userRoutes');
 const orderRouter = require('./routes/orderRoutes');
 const orderCtrl = require('./controllers/orderController');
 
+// ---------- Slow Network Test -----------
+// app.use((req, res, next) => {
+//   setTimeout(() => {
+//     next();
+//   }, 2000);
+// });
+
 // ----- Setting security headers -------
 // app.use(
 //   helmet.contentSecurityPolicy({
@@ -64,13 +71,6 @@ if (process.env.NODE_ENV === 'production') {
     else next();
   });
 }
-
-// ---------- Slow Network Test -----------
-// app.use((req, res, next) => {
-//   setTimeout(() => {
-//     next();
-//   }, 3000);
-// });
 
 app.use('/api/v1/products', productRouter);
 app.use('/api/v1/users', userRouter);

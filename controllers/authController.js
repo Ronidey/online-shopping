@@ -108,7 +108,9 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 
 exports.isLoggedIn = async (req, res, next) => {
   try {
-    if (!req.cookies.jwt) return next();
+    const token =
+      req.cookies.jwt || req.headers.authorization.split('Bearer ')[1];
+    if (!token) return next();
 
     const decoded = await promisify(jwt.verify)(
       req.cookies.jwt,

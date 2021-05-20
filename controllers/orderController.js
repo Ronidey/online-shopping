@@ -2,46 +2,17 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const Order = require('../models/OrderModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const User = require('../models/userModel');
 
 exports.getMyOrders = catchAsync(async (req, res, next) => {
-  const orders = await Order.find({ user: req.currentUser._id });
+  const orders = await Order.find({ user: req.currentUser._id }).sort(
+    '-createdAt'
+  );
 
   res.status(200).json({
     orders
   });
 });
-
-// exports.createOrder = catchAsync(async (req, res, next) => {
-//   const myCart = await Cart.findOne({ user: req.currentUser._id }).populate({
-//     path: 'items.item',
-//     select: 'imgUrl title currentPrice'
-//   });
-
-//   let orders = [];
-
-//   for (let itemObj of myCart.items) {
-//     let item = itemObj.item;
-
-//     let orderObj = {
-//       product: {
-//         title: item.title,
-//         price: item.currentPrice,
-//         imgUrl: item.imgUrl,
-//         size: itemObj.size,
-//         qty: itemObj.qty
-//       },
-//       user: req.currentUser._id
-//     };
-
-//     orders.push(orderObj);
-//   }
-
-//   const myOrder = await Order.create(orders);
-
-//   res.status(201).json({
-//     myOrder
-//   });
-// });
 
 // Only for Development
 exports.deleteAllOrders = catchAsync(async (req, res, next) => {
@@ -50,9 +21,9 @@ exports.deleteAllOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.getStripeSession = catchAsync(async (req, res, next) => {
-  const myCart = await Cart.findOne({ user: req.currentUser._id }).populate({
-    path: 'items.product',
-    select: 'imgUrl title currentPrice'
+  const user = await User.findById(req.currentUser._id).populate({
+    path: 'cart.product',
+    select: 'title imgUrl currentPrice'
   });
 
   const checkoutObj = {
@@ -62,10 +33,11 @@ exports.getStripeSession = catchAsync(async (req, res, next) => {
     success_url: `${req.protocol}://${req.get('host')}/checkout-success`,
     cancel_url: `${req.protocol}://${req.get('host')}/`,
     customer_email: req.currentUser.email,
-    client_reference_id: req.currentUser._id.toString()
+    client_reference_id: req.currentUser._id.toString(),
+    metadata: {}
   };
 
-  for (let cartItem of myCart.items) {
+  for (let cartItem of user.cart) {
     const product = cartItem.product;
 
     checkoutObj.line_items.push({

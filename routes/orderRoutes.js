@@ -6,7 +6,6 @@ const orderCtrl = require('../controllers/orderController');
 router.use(authCtrl.protect);
 
 router.get('/', orderCtrl.getMyOrders);
-// router.post('/', orderCtrl.createOrder);
 router.delete('/', orderCtrl.deleteAllOrders);
 
 router.post('/checkout', orderCtrl.getStripeSession);

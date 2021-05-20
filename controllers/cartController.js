@@ -1,3 +1,4 @@
+const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 
 // ---------- For Testing Only ----------
@@ -5,12 +6,14 @@ exports.addCartItem = catchAsync(async (req, res, next) => {
   const user = req.currentUser;
 
   // 1) If the product already exists, increment qty
-  const cartItem = user.cart.find(
-    (item) => item.product._id == req.body.productId
-  );
+  const cartItem = user.cart.find((item) => item.product == req.body.productId);
 
   if (!cartItem) {
-    user.cart.push({ product: req.body.productId, qty: req.body.qty });
+    user.cart.push({
+      product: req.body.productId,
+      qty: req.body.qty,
+      size: req.body.size
+    });
   } else {
     cartItem.qty += 1;
   }
@@ -20,9 +23,14 @@ exports.addCartItem = catchAsync(async (req, res, next) => {
 });
 
 exports.getMyCart = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.currentUser._id).populate({
+    path: 'cart.product',
+    select: 'title imgUrl currentPrice'
+  });
+
   res.json({
-    itemsCount: req.currentUser.cart.length,
-    cart: req.currentUser.cart
+    itemsCount: user.cart.length,
+    cart: user.cart
   });
 });
 

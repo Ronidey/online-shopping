@@ -42,8 +42,10 @@ const userSchema = new mongoose.Schema(
     },
     wishlist: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product'
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Product'
+        }
       }
     ],
     cart: [
@@ -76,17 +78,17 @@ userSchema.methods.toJSON = function () {
 //   return `${this.firstName} ${this.lastName}`;
 // });
 
-userSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: 'wishlist',
-    select: 'imgUrl title currentPrice'
-  }).populate({
-    path: 'cart.product',
-    select: 'title imgUrl currentPrice'
-  });
+// userSchema.pre(/^find/, function (next) {
+//   this.populate({
+//     path: 'wishlist',
+//     select: 'imgUrl title currentPrice'
+//   }).populate({
+//     path: 'cart.product',
+//     select: 'title imgUrl currentPrice'
+//   });
 
-  next();
-});
+//   next();
+// });
 
 userSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
