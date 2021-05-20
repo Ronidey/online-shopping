@@ -68,12 +68,6 @@ const createOrderCheckout = async (session) => {
       expand: ['line_items']
     });
 
-    // Removing all Cart Items
-    await Cart.findOneAndUpdate(
-      { user: session.client_reference_id },
-      { items: [] }
-    );
-
     // -------- Create Order --------------
     let orders = [];
 
@@ -91,6 +85,8 @@ const createOrderCheckout = async (session) => {
     }
 
     await Order.create(orders);
+    // Removing all Cart Items
+    await User.findByIdAndUpdate(session.client_reference_id, { cart: [] });
   } catch (err) {
     console.log('Error: 💥💥💥💥💥💥💥💥💥💥💥', err.message);
   }
