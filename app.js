@@ -2,11 +2,12 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser');
-const helmet = require('helmet');
+// const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const rateLimit = require('express-rate-limit');
 var compression = require('compression');
+var cors = require('cors');
 
 const productRouter = require('./routes/productRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -32,6 +33,8 @@ const orderCtrl = require('./controllers/orderController');
 //     }
 //   })
 // );
+
+app.use(cors());
 
 // Limit requests from the same API
 const limiter = rateLimit({
